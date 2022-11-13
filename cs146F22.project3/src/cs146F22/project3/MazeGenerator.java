@@ -1,6 +1,7 @@
 package cs146F22.project3;
 
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
@@ -109,6 +110,95 @@ public class MazeGenerator {
 			this.dy = dy;
 		}
 	};
+	
+	// u is index of first vertex, v is index of 2nd vertex
+    static void addEdge(ArrayList<ArrayList<Integer> > adj, int u, int v) {
+    	
+    	adj.get(u).add(v);
+    	}
+	
+	// create the array of linked list for graph representation
+	public void createArray() {
+		int V = x * y; // V vertices, equal to rows * columns
+	    ArrayList<ArrayList<Integer> > adj = new ArrayList<ArrayList<Integer> >(V);
+	    
+        for (int i = 0; i < V; i++)
+            adj.add(new ArrayList<Integer>());
+        
+	    int vertex = 0;
+	    // add edges 
+		for (int i = 0; i < x; i++) { // row x
+			for (int j = 0; j < y; j++) { // column y
+				// TODO: come up with something better?
+				if (maze[i][j] == 1) // neighbor north
+					addEdge(adj, vertex, vertex - y);
+				else if (maze[i][j] == 2) // neighbor south
+					addEdge(adj, vertex, vertex + y);
+				else if (maze[i][j] == 3) { // neighbor south and north
+					addEdge(adj, vertex, vertex + y); // south
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 4) // neighbor east
+					addEdge(adj, vertex, vertex + 1);
+				else if (maze[i][j] == 5) {// neighbor east and north
+					addEdge(adj, vertex, vertex + 1); // east
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 6) { // neighbor east and south
+					addEdge(adj, vertex, vertex + 1); // east
+					addEdge(adj, vertex, vertex + y); // south
+				}
+				else if (maze[i][j] == 7) { // neighbor east south north
+					addEdge(adj, vertex, vertex + 1); // east
+					addEdge(adj, vertex, vertex + y); // south
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 8) // neighbor west
+					addEdge(adj, vertex, vertex - 1);
+				else if (maze[i][j] == 9) { // neighbor west and north
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 10) { // neighbor west and south
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex + y); // south
+				}
+				else if (maze[i][j] == 11) { // neighbor west south north
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex + y); // south
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 12) { // neighbor west and east
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex + 1); // east
+				}
+				else if (maze[i][j] == 13) { // neighbor west east north
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex + 1); // east
+					addEdge(adj, vertex, vertex - y); // north
+				}
+				else if (maze[i][j] == 14) { // neighbor west east south
+					addEdge(adj, vertex, vertex - 1); // west
+					addEdge(adj, vertex, vertex + 1); // east
+					addEdge(adj, vertex, vertex + y); // south
+				}
+			// impossible combinations of bits are 0, 15
+				vertex++;
+				//System.out.println(vertex);
+			}
+		}
+		// print adjacency lists
+        for (int i = 0; i < adj.size(); i++) {
+            System.out.println("\nAdjacency list of vertex "
+                               + i);
+            System.out.print("head");
+            for (int j = 0; j < adj.get(i).size(); j++) {
+                System.out.print(" -> "
+                                 + adj.get(i).get(j));
+            }
+            System.out.println();
+        }
+	}
 
 	public static void main(String[] args) {
 		
@@ -116,6 +206,7 @@ public class MazeGenerator {
 		
 		maze33.displayCells();
 	    maze33.displayMaze();
+	    maze33.createArray();
 	    /*
 	    MazeGenerator maze58 = new MazeGenerator(5, 8);
 		
@@ -125,8 +216,8 @@ public class MazeGenerator {
 	    
 	    MazeGenerator maze55 = new MazeGenerator(5, 5);
 		
-		maze55.displayCells();
-	    maze55.displayMaze();
+		//maze55.displayCells();
+	    //maze55.displayMaze();
 	}
 
 }
