@@ -1,7 +1,8 @@
 package cs146F22.project3;
 
 import java.util.Collections;
-import java.awt.Adjustable;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -203,32 +204,72 @@ public class MazeGenerator {
             System.out.println();
         }
 	}
+
 	
 	public void BFS() {
+		// initialize
+		int V = x * y; // V vertices, equal to rows * columns
+		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+		int discovered[] = new int[V]; // discovery time
+		int parent[] = new int[V]; // index of parent in adj
+		for (int i = 0; i < V; i++) {
+			visited[i] = 0; // all are not visited at start
+			discovered[i] = Integer.MAX_VALUE; // infinity
+			parent[i] = -1; // index outside of adj
+		}
 		
+		visited[0] = 1; // set first to grey
+		discovered[0] = 0; // distance to itself
+		parent[0] = -1; // no parent
+		
+		Queue<Integer> q = new LinkedList<>();
+		q.add(0);
+		while (q.size() != 0) {
+			Integer u = q.remove();
+			for (Integer i : adj.get(u)) {
+				if (visited[i] == 0) { // if undiscovered
+					visited[i] = 1; // if discovered but not finished
+					discovered[i] = discovered[u] + 1;
+					parent[i] = u;
+					q.add(i);
+				}
+			}
+			visited[u] = 2; // finished
+		}
+		System.out.println("Visited: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(visited[i] + " ");
+		}
+		System.out.println("\nDiscovered: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(discovered[i] + " ");
+		}
+		System.out.println("\nParent: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(parent[i] + " ");
+		}
 	}
 
+	
+	public void DFS() {
+		
+	}
 	public static void main(String[] args) {
 		
 		MazeGenerator maze33 = new MazeGenerator(3, 3);
 		
-//		maze33.displayCells();
-//	    maze33.displayMaze();
-//	    maze33.createArray();
+		maze33.displayCells();
+	    maze33.displayMaze();
+	    maze33.createArray();
+	    maze33.BFS();
 	    
-	    /*
-	    MazeGenerator maze58 = new MazeGenerator(5, 8);
-		
-		maze58.displayCells();
-	    maze58.displayMaze();
-	    */
 	    
-	    MazeGenerator maze55 = new MazeGenerator(5, 5);
-		
-		maze55.displayCells();
-	    maze55.displayMaze();
-	    maze55.createArray();
-	    
+//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+//		
+//		maze55.displayCells();
+//	    maze55.displayMaze();
+//	    maze55.createArray();
+//	    maze55.BFS();
 	}
 
 }
