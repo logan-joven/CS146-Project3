@@ -1,6 +1,7 @@
 package cs146F22.project3;
 
 import java.util.Collections;
+import java.awt.Adjustable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,6 +16,9 @@ public class MazeGenerator {
 	private final int y;
 	//stores the cells
 	private final int[][] maze;
+	
+	//stores the adjacency list
+	ArrayList<ArrayList<Integer> > adj;
 
 	//Constructor
 	public MazeGenerator(int x, int y) {
@@ -120,7 +124,7 @@ public class MazeGenerator {
 	// create the array of linked list for graph representation
 	public void createArray() {
 		int V = x * y; // V vertices, equal to rows * columns
-	    ArrayList<ArrayList<Integer> > adj = new ArrayList<ArrayList<Integer> >(V);
+	    adj = new ArrayList<ArrayList<Integer> >(V);
 	    
         for (int i = 0; i < V; i++)
             adj.add(new ArrayList<Integer>());
@@ -199,14 +203,19 @@ public class MazeGenerator {
             System.out.println();
         }
 	}
+	
+	public void BFS() {
+		
+	}
 
 	public static void main(String[] args) {
 		
 		MazeGenerator maze33 = new MazeGenerator(3, 3);
 		
-		maze33.displayCells();
-	    maze33.displayMaze();
-	    maze33.createArray();
+//		maze33.displayCells();
+//	    maze33.displayMaze();
+//	    maze33.createArray();
+	    
 	    /*
 	    MazeGenerator maze58 = new MazeGenerator(5, 8);
 		
@@ -216,8 +225,10 @@ public class MazeGenerator {
 	    
 	    MazeGenerator maze55 = new MazeGenerator(5, 5);
 		
-		//maze55.displayCells();
-	    //maze55.displayMaze();
+		maze55.displayCells();
+	    maze55.displayMaze();
+	    maze55.createArray();
+	    
 	}
 
 }
