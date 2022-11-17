@@ -1,4 +1,4 @@
-package cs146F22.project3;
+//package src.project3;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -230,6 +230,9 @@ public class MazeGenerator {
 				if (visited[i] == 0) { // if undiscovered
 					visited[i] = 1; // if discovered but not finished
 					discovered[i] = discovered[u] + 1;
+					//want a discovered that increments the counter
+					//counter = 0, everytime we discover something increment
+					//an array that is the distance can be set to the current discovered
 					parent[i] = u;
 					q.add(i);
 				}
@@ -250,10 +253,54 @@ public class MazeGenerator {
 		}
 	}
 
-	
+//
 	public void DFS() {
-		
+    	int V = x*y;
+		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+		int discovered[] = new int[V];
+		int parent[] = new int[V]; // index of parent in adj
+
+		for(int i = 0; i<V;i++) {
+			visited[i] = 0; //set it to 0, to indicate unvisited
+			parent[i] = -1; //set to -1 to indicate no parents.
+		}
+
+		for(int j = 0; j<V; j++){
+			if(visited[j] == 0){
+				visit(j);
+				}
+			}
+		}
+
+
+// Need to fix this method
+	public void visit(int a){ //have an array as the parameter
+		//DELETE THIS
+//		int V = x*y;
+//		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+//		int discovered[] = new int[V];
+//		int parent[] = new int[V]; // index of parent in adj
+			//DELETE THESE
+//
+//    	visited[a]= 1;
+//    	discovered[a] +=1;
+//    	visited[discovered[a]] = visited[a];
+//
+//		for (Integer i : adj.get(a)) {
+//			if(visited[i] == 0){
+//				parent[i] = a;
+//				visit(parent[i]);
+//			}
+//			visited[i] = 2;
+//			discovered[i] += 1;
+//
 	}
+//
+//
+//
+//
+//	}
+
 	public static void main(String[] args) {
 		
 		MazeGenerator maze33 = new MazeGenerator(3, 3);
