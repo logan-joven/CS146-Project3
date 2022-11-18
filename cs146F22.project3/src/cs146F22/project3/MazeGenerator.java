@@ -29,6 +29,7 @@ public class MazeGenerator {
 		generateMaze(0, 0);
 		
 	}
+	
 	//prints the maze with the cells and walls removed 
 	public void displayMaze() {
 		for (int i = 0; i < y; i++) {
@@ -47,10 +48,9 @@ public class MazeGenerator {
 		for (int j = 0; j < x; j++) {
 			System.out.print("+---");
 		}
-		System.out.println("+");
-		
-		
+		System.out.println("+");	
 	}
+	
 	//recursive perfect maze generator, using a modified DFS
 	//(cx,cy) coordinates of current cell, and (nx,ny) coordinates of neighbor cell
 	private void generateMaze(int cx, int cy) {
@@ -205,7 +205,13 @@ public class MazeGenerator {
 //        }
 	}
 
-	//TODO: modify BFS to print output to file, end when  
+	//TODO: modify BFS to
+	/*				1. end at the vertex instead of iterating through the entire graph	
+	 * 				2. print the maze with each vertex's discovery time
+	 * 				3. compute and print the shortest path to the end of the maze
+	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
+	 * 				5. All should be written into a file
+	 */ 
 	
 	public void BFS() {
 		// initialize
@@ -262,6 +268,14 @@ public class MazeGenerator {
 	}
 
 	
+	
+	//TODO: modify DFS  to
+	/*				1. end at the vertex instead of iterating through the entire graph	
+	 * 				2. print the maze with each vertex's discovery time
+	 * 				3. compute and print the shortest path to the end of the maze
+	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
+	 * 				5. All should be written into a file
+	 */ 
     public int time = 0;
     public void DFS() {
 		// initialize
@@ -325,21 +339,21 @@ public class MazeGenerator {
     
 	public static void main(String[] args) {
 		
-		MazeGenerator maze33 = new MazeGenerator(3, 3);
-		
-		maze33.displayCells();
-	    maze33.displayMaze();
-	    maze33.createArray();
-//	    maze33.BFS();
-	    maze33.DFS();
-	    
-	    
-//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+//		MazeGenerator maze33 = new MazeGenerator(3, 3);
 //		
-//		maze55.displayCells();
-//	    maze55.displayMaze();
-//	    maze55.createArray();
-//	    maze55.DFS();
+//		maze33.displayCells();
+//	    maze33.displayMaze();
+//	    maze33.createArray();
+//	    maze33.BFS();
+//	    maze33.DFS();
+//	    
+	    
+	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+		
+		maze55.displayCells();
+	    maze55.displayMaze();
+	    maze55.createArray();
+	    maze55.DFS();
 	    
 	}
 
