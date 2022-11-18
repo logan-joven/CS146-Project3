@@ -265,6 +265,29 @@ public class MazeGenerator {
 		for (int i = 0; i < V; i++) {
 			System.out.print(discovered[i] + " ");
 		}
+		
+		
+		//print maze with each cell containing the order discovered
+		System.out.println("\nMaze with order of discovery (BFS)");
+		int count = 0;
+		for (int i = 0; i < y; i++) {
+			// draw the north edge
+			for (int j = 0; j < x; j++) {
+				System.out.print((maze[i][j] & 1) == 0 ? "+---" : "+   ");
+			}
+			System.out.println("+");
+			// draw the west edge
+			for (int j = 0; j < x; j++) {
+				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count] +  " " : "  " + discovered[count] + " " );
+				count++;
+			}
+			System.out.println("|");
+		}
+		// draw the bottom line
+		for (int j = 0; j < x; j++) {
+			System.out.print("+---");
+		}
+		System.out.println("+");
 	}
 
 	
@@ -316,6 +339,29 @@ public class MazeGenerator {
 		for (int i = 0; i < V; i++) {
 			System.out.print(finished[i] + " ");
         }
+		
+		//print maze with each cell containing the order discovered
+		System.out.println("\nMaze with discovery time (DFS)");
+		int count = 0;
+		for (int i = 0; i < y; i++) {
+			// draw the north edge
+			for (int j = 0; j < x; j++) {
+				System.out.print((maze[i][j] & 1) == 0 ? "+---" : "+   ");
+			}
+			System.out.println("+");
+			// draw the west edge
+			for (int j = 0; j < x; j++) {
+				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count] +  " " : "  " + discovered[count] + " " );
+				count++;
+			}
+			System.out.println("|");
+		}
+		// draw the bottom line
+		for (int j = 0; j < x; j++) {
+			System.out.print("+---");
+		}
+		System.out.println("+");
+		
     }
 
 
@@ -339,21 +385,21 @@ public class MazeGenerator {
     
 	public static void main(String[] args) {
 		
-//		MazeGenerator maze33 = new MazeGenerator(3, 3);
-//		
-//		maze33.displayCells();
-//	    maze33.displayMaze();
-//	    maze33.createArray();
-//	    maze33.BFS();
-//	    maze33.DFS();
-//	    
-	    
-	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+		MazeGenerator maze33 = new MazeGenerator(3, 3);
 		
-		maze55.displayCells();
-	    maze55.displayMaze();
-	    maze55.createArray();
-	    maze55.DFS();
+		maze33.displayCells();
+	    maze33.displayMaze();
+	    maze33.createArray();
+	    maze33.BFS();
+	    maze33.DFS();
+	    
+	    
+//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+//		
+//		maze55.displayCells();
+//	    maze55.displayMaze();
+//	    maze55.createArray();
+//	    maze55.DFS();
 	    
 	}
 
