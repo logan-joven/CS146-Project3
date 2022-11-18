@@ -193,31 +193,32 @@ public class MazeGenerator {
 			}
 		}
 		// print adjacency lists
-        for (int i = 0; i < adj.size(); i++) {
-            System.out.println("\nAdjacency list of vertex "
-                               + i);
-            System.out.print("head");
-            for (int j = 0; j < adj.get(i).size(); j++) {
-                System.out.print(" -> "
-                                 + adj.get(i).get(j));
-            }
-            System.out.println();
-        }
+//        for (int i = 0; i < adj.size(); i++) {
+//            System.out.println("\nAdjacency list of vertex "
+//                               + i);
+//            System.out.print("head");
+//            for (int j = 0; j < adj.get(i).size(); j++) {
+//                System.out.print(" -> "
+//                                 + adj.get(i).get(j));
+//            }
+//            System.out.println();
+//        }
 	}
 
-	//TODO: modify BFS to print output to file, 
+	//TODO: modify BFS to print output to file, end when  
 	
 	public void BFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
 		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
 		int distance[] = new int[V]; // distance from origin 0
-		int discovered[] = new int[V]; // discovery time
 		int parent[] = new int[V]; // index of parent in adj
+		int discovered[] = new int[V]; // discovery time
 		for (int i = 0; i < V; i++) {
 			visited[i] = 0; // all are not visited at start
 			distance[i] = Integer.MAX_VALUE; // infinity
 			parent[i] = -1; // index outside of adj
+			discovered[i] = 0; // discovery time
 		}
 		
 		visited[0] = 1; // set first to grey
@@ -261,53 +262,67 @@ public class MazeGenerator {
 	}
 
 	
-    
+    public int time = 0;
     public void DFS() {
-        int V = x*y;
-        int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
-        int discovered[] = new int[V];
-        int parent[] = new int[V]; // index of parent in adj
-
-        for(int i = 0; i<V;i++) {
-            visited[i] = 0; //set it to 0, to indicate unvisited
-            parent[i] = -1; //set to -1 to indicate no parents.
-        }
-
-        for(int j = 0; j<V; j++){
-            if(visited[j] == 0){
-                visit(j);
+		// initialize
+		int V = x * y; // V vertices, equal to rows * columns
+		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+		int parent[] = new int[V]; // index of parent in adj
+		int discovered[] = new int[V]; // discovery time
+		int finished[] = new int[V]; // finish  time
+		
+		// initialize the graph
+		for (int i = 0; i < V; i++) {
+			visited[i] = 0; // all are not visited at start
+			parent[i] = -1; // index outside of adj
+			discovered[i] = 0; // discovery time
+			finished[i] = 0; // finish time
+		}
+		
+		// call visit on each vertex until end of maze 
+        for(int u = 0; u < V; u++){
+            if(visited[u] == 0){
+                visit(visited, parent, finished, discovered, u);
                 }
             }
+        
+		System.out.println("\nVisited: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(visited[i] + " ");
+		}
+		System.out.println("\nParent: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(parent[i] + " ");
+		}
+		System.out.println("\nDiscovered: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(discovered[i] + " ");
         }
-
-
-// Need to fix this method
-    public void visit(int a){ //have an array as the parameter
-        //DELETE THIS
-//        int V = x*y;
-//        int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
-//        int discovered[] = new int[V];
-//        int parent[] = new int[V]; // index of parent in adj
-            //DELETE THESE
-//
-//        visited[a]= 1;
-//        discovered[a] +=1;
-//        visited[discovered[a]] = visited[a];
-//
-//        for (Integer i : adj.get(a)) {
-//            if(visited[i] == 0){
-//                parent[i] = a;
-//                visit(parent[i]);
-//            }
-//            visited[i] = 2;
-//            discovered[i] += 1;
-//
+		System.out.println("\nFinished: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(finished[i] + " ");
+        }
     }
-//
-//
-//
-//
-//    }
+
+
+    
+    public void visit(int visited[], int parent[], int finished[], int discovered[], int u){
+    	
+    	visited[u] = 1; // make grey
+    	time += 1;
+    	discovered[u] = time;
+    	
+    	for (Integer i : adj.get(u)) {
+    		if (visited[i] == 0) {
+    			parent[i] = u;
+    			visit(visited, parent, finished, discovered, i);
+    		}
+    	}
+    	visited[u] = 2;
+    	time += 1;
+    	finished[u] = time; 	
+    }
+    
 	public static void main(String[] args) {
 		
 		MazeGenerator maze33 = new MazeGenerator(3, 3);
@@ -315,7 +330,8 @@ public class MazeGenerator {
 		maze33.displayCells();
 	    maze33.displayMaze();
 	    maze33.createArray();
-	    maze33.BFS();
+//	    maze33.BFS();
+	    maze33.DFS();
 	    
 	    
 //	    MazeGenerator maze55 = new MazeGenerator(5, 5);
@@ -323,7 +339,8 @@ public class MazeGenerator {
 //		maze55.displayCells();
 //	    maze55.displayMaze();
 //	    maze55.createArray();
-//	    maze55.BFS();
+//	    maze55.DFS();
+	    
 	}
 
 }
