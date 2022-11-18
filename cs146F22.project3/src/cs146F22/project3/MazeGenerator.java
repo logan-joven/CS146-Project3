@@ -206,11 +206,11 @@ public class MazeGenerator {
 	}
 
 	//TODO: modify BFS to
-	/*				1. end at the vertex instead of iterating through the entire graph	
-	 * 				2. print the maze with each vertex's discovery time
+	/*				1. end at the vertex instead of iterating through the entire graph
+	 * 				2. maze should be fixed to account for 2-digit wide cells (currently, if a cell contains 2 digits, it is offset)
 	 * 				3. compute and print the shortest path to the end of the maze
 	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
-	 * 				5. All should be written into a file
+	 * 				5. All should be written into a file, checked with JUnit tests
 	 */ 
 	
 	public void BFS() {
@@ -218,7 +218,7 @@ public class MazeGenerator {
 		int V = x * y; // V vertices, equal to rows * columns
 		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
 		int distance[] = new int[V]; // distance from origin 0
-		int parent[] = new int[V]; // index of parent in adj
+		int parent[] = new int[V]; // index of parent
 		int discovered[] = new int[V]; // discovery time
 		for (int i = 0; i < V; i++) {
 			visited[i] = 0; // all are not visited at start
@@ -293,11 +293,11 @@ public class MazeGenerator {
 	
 	
 	//TODO: modify DFS  to
-	/*				1. end at the vertex instead of iterating through the entire graph	
-	 * 				2. print the maze with each vertex's discovery time
+	/*				1. end at the vertex instead of iterating through the entire graph
+	 * 				2. maze should be fixed to account for 2-digit wide cells (currently, if a cell contains 2 digits, it is offset)
 	 * 				3. compute and print the shortest path to the end of the maze
 	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
-	 * 				5. All should be written into a file
+	 * 				5. All should be written into a file, checked with JUnit tests
 	 */ 
     public int time = 0;
     public void DFS() {
