@@ -205,53 +205,64 @@ public class MazeGenerator {
         }
 	}
 
+	//TODO: modify BFS to print output to file, 
 	
 	public void BFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
 		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+		int distance[] = new int[V]; // distance from origin 0
 		int discovered[] = new int[V]; // discovery time
 		int parent[] = new int[V]; // index of parent in adj
 		for (int i = 0; i < V; i++) {
 			visited[i] = 0; // all are not visited at start
-			discovered[i] = Integer.MAX_VALUE; // infinity
+			distance[i] = Integer.MAX_VALUE; // infinity
 			parent[i] = -1; // index outside of adj
 		}
 		
 		visited[0] = 1; // set first to grey
-		discovered[0] = 0; // distance to itself
+		distance[0] = 0; // distance to itself
 		parent[0] = -1; // no parent
+		discovered[0] = 0; // discovered first
 		
 		Queue<Integer> q = new LinkedList<>();
 		q.add(0);
+		int counter = 1; // used for discovery time
 		while (q.size() != 0) {
 			Integer u = q.remove();
 			for (Integer i : adj.get(u)) {
 				if (visited[i] == 0) { // if undiscovered
 					visited[i] = 1; // if discovered but not finished
-					discovered[i] = discovered[u] + 1;
+					distance[i] = distance[u] + 1;
 					parent[i] = u;
+					discovered[i] = counter;
+					counter++;
 					q.add(i);
 				}
 			}
 			visited[u] = 2; // finished
 		}
-		System.out.println("Visited: " );
+		System.out.println("\nVisited: " );
 		for (int i = 0; i < V; i++) {
 			System.out.print(visited[i] + " ");
 		}
-		System.out.println("\nDiscovered: " );
+		System.out.println("\nDistance: " );
 		for (int i = 0; i < V; i++) {
-			System.out.print(discovered[i] + " ");
+			System.out.print(distance[i] + " ");
 		}
 		System.out.println("\nParent: " );
 		for (int i = 0; i < V; i++) {
 			System.out.print(parent[i] + " ");
 		}
+		System.out.println("\nDiscovered: " );
+		for (int i = 0; i < V; i++) {
+			System.out.print(discovered[i] + " ");
+		}
 	}
 
 	
 	public void DFS() {
+		
 		
 	}
 	public static void main(String[] args) {
