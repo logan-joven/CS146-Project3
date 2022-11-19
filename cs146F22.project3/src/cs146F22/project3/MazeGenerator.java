@@ -12,16 +12,23 @@ import java.util.Arrays;
  * http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking
  */
 public class MazeGenerator {
-	//coordinates row x, column y
+	// coordinates row x, column y
 	private final int x;
 	private final int y;
-	//stores the cells
+	// stores the cells
 	private final int[][] maze;
 	
-	//stores the adjacency list
+	// stores the adjacency list
 	ArrayList<ArrayList<Integer> > adj;
+	
+	// stores the time and finished flag for DFS
+    public int time = 0;
+    public boolean DFSfinished = false;
 
-	//Constructor
+    // stores the number of tiles/cells visited
+	public int tiles = 1;
+    
+	// Constructor
 	public MazeGenerator(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -30,7 +37,7 @@ public class MazeGenerator {
 		
 	}
 	
-	//prints the maze with the cells and walls removed 
+	// prints the maze with the cells and walls removed 
 	public void displayMaze() {
 		for (int i = 0; i < y; i++) {
 			// draw the north edge
@@ -51,8 +58,8 @@ public class MazeGenerator {
 		System.out.println("+");	
 	}
 	
-	//recursive perfect maze generator, using a modified DFS
-	//(cx,cy) coordinates of current cell, and (nx,ny) coordinates of neighbor cell
+	// recursive perfect maze generator, using a modified DFS
+	// (cx,cy) coordinates of current cell, and (nx,ny) coordinates of neighbor cell
 	private void generateMaze(int cx, int cy) {
 		DIR[] dirs = DIR.values();
 		Collections.shuffle(Arrays.asList(dirs));
@@ -76,7 +83,8 @@ public class MazeGenerator {
 			}
 		}
 	}
-	//prints the value of maze array
+	
+	// prints the value of maze array
 	public void displayCells() {
 		for (int i=0;i<x;i++) {
 			for (int j=0;j<y;j++)
@@ -85,7 +93,7 @@ public class MazeGenerator {
 			}
 	}	
 		
-    //checks if 0<=v<upper
+    // checks if 0<=v<upper
 	private static boolean between(int v, int upper) {
 		return (v >= 0) && (v < upper);
 	}
@@ -205,19 +213,12 @@ public class MazeGenerator {
 //        }
 	}
 
-	//TODO: modify BFS to
-	/*				1. end at the vertex instead of iterating through the entire graph
-	 * 				2. maze should be fixed to account for 2-digit wide cells (currently, if a cell contains 2 digits, it is offset)
-	 * 				3. compute and print the shortest path to the end of the maze
-	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
-	 * 				5. All should be written into a file, checked with JUnit tests
-	 */ 
-	
+	//TODO: modify BFS to write into file instead of print into console, check with JUnit tests, also write what BFS does
 	public void BFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
 		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
-		int distance[] = new int[V]; // distance from origin 0
+		int distance[] = new int[V]; // distance from origin 0, not used for this project
 		int parent[] = new int[V]; // index of parent
 		int discovered[] = new int[V]; // discovery time
 		for (int i = 0; i < V; i++) {
@@ -241,10 +242,10 @@ public class MazeGenerator {
 			for (Integer i : adj.get(u)) {
 				if((u) == adj.size()-1){ // end of maze is V - 1
                     finished = true;
-                    q.clear();
+                    q.clear(); // clear queue 
                 }
-				if (visited[i] == 0 && !finished) { // if undiscovered
-					visited[i] = 1; // if discovered but not finished
+				if (visited[i] == 0 && !finished) { // if undiscovered and end of maze not reached
+					visited[i] = 1; // discovered but not finished
 					distance[i] = distance[u] + 1;
 					parent[i] = u;
 					discovered[i] = counter;
@@ -254,44 +255,86 @@ public class MazeGenerator {
 			}
 			visited[u] = 2; // finished
 		}
-		System.out.println("\nVisited: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(visited[i] + " ");
-		}
-		System.out.println("\nDistance: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(distance[i] + " ");
-		}
-		System.out.println("\nParent: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(parent[i] + " ");
-		}
-		System.out.println("\nDiscovered: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(discovered[i] + " ");
-		}
-		
 		
 		//print maze with each cell containing the order discovered
 		System.out.println("\nMaze with order of discovery (BFS)");
 		printMaze(discovered);
 		
+		tiles = 1;
 		System.out.println("Path: ");
 		printPath(0, V-1, parent);
+		System.out.println("\nTotal number of tiles visited: " + tiles);
 	}
 
-	void printPath(int s, int v, int[] parent) {
-		if (v == s) {
-			System.out.print(s + ", ");
+    void printPath(int s, int v, int[] parent) {
+        if (v == s) {
+            System.out.print(s + ", ");
+        }
+        else if (parent[v] == -1)
+            System.out.println("no path");
+        else {
+            printPath(s, parent[v], parent);
+            System.out.print(v + ", ");
+            tiles++;
+        }
+    }
+    
+	// TODO: modify DFS to write into file instead of print into console, check with JUnit tests, also write what DFS does
+    public void DFS() {
+		// initialize
+		int V = x * y; // V vertices, equal to rows * columns
+		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
+		int parent[] = new int[V]; // index of parent in adj
+		int discovered[] = new int[V]; // discovery time
+		
+		// initialize the graph
+		for (int i = 0; i < V; i++) {
+			visited[i] = 0; // all are not visited at start
+			parent[i] = -1; // index outside of adj
+			discovered[i] = 0; // discovery time
 		}
-		else if (parent[v] == -1)
-			System.out.println("no path");
-		else {
-			printPath(s, parent[v], parent);
-			System.out.print(v + ", ");
-		}
-	}
+		
+		// call visit on each vertex until end of maze 
+        for(int u = 0; u < V; u++){
+            if(visited[u] == 0 && !DFSfinished){
+                visit(visited, parent, discovered, u);
+                }
+            }
+        
+		//print maze with each cell containing the order discovered
+		System.out.println("\nMaze with order of discovery (DFS)");
+		printMaze(discovered);
+		
+		tiles = 1;
+		System.out.println("Path: ");
+		printPath(0, V-1, parent);
+		System.out.println("\nTotal number of tiles visited: " + tiles);
+		
+    }
+
+    // recursive call in DFS
+    public void visit(int visited[], int parent[], int discovered[], int u){
+    	
+    	visited[u] = 1; // make grey
+    	time += 1;
+    	discovered[u] = time;
+    	
+    	for (Integer i : adj.get(u)) {
+    		if (visited[i] == 0 && !DFSfinished) {
+    			if((u) == adj.size()-1){
+                    DFSfinished = true;
+                }
+    			if (!DFSfinished) {
+    				parent[i] = u;
+    				visit(visited, parent, discovered, i);
+    			}
+    		}
+    	}
+    	visited[u] = 2;	
+    }
 	
+    // currently prints the maze with discovered cells in order (1s place only), undiscovered as 0
+    // TODO: write to file instead of printing in console
 	void printMaze (int[] discovered) {
 		int count = 0;
 		for (int i = 0; i < y; i++) {
@@ -314,96 +357,8 @@ public class MazeGenerator {
 		System.out.println("+");
 	}
 	
+	// TODO: method for printing the maze with shortest path as #'s
 	
-	//TODO: modify DFS  to
-	/*				1. end at the vertex instead of iterating through the entire graph
-	 * 				2. maze should be fixed to account for 2-digit wide cells (currently, if a cell contains 2 digits, it is offset)
-	 * 				3. compute and print the shortest path to the end of the maze
-	 * 				4. print the path as a sequence of vertices (i.e. 0, 1, 4, 5, 8), length of path, and number of visited cells
-	 * 				5. All should be written into a file, checked with JUnit tests
-	 */ 
-    public int time = 0;
-    public void DFS() {
-		// initialize
-		int V = x * y; // V vertices, equal to rows * columns
-		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
-		int parent[] = new int[V]; // index of parent in adj
-		int discovered[] = new int[V]; // discovery time
-		
-		// initialize the graph
-		for (int i = 0; i < V; i++) {
-			visited[i] = 0; // all are not visited at start
-			parent[i] = -1; // index outside of adj
-			discovered[i] = 0; // discovery time
-		}
-		
-		// call visit on each vertex until end of maze 
-        for(int u = 0; u < V; u++){
-            if(visited[u] == 0 && !DFSfinished){
-                visit(visited, parent, discovered, u);
-                }
-            }
-        
-		System.out.println("\nVisited: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(visited[i] + " ");
-		}
-		System.out.println("\nParent: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(parent[i] + " ");
-		}
-		System.out.println("\nDiscovered: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(discovered[i] + " ");
-        }
-		
-		//print maze with each cell containing the order discovered
-		System.out.println("\nMaze with discovery time (DFS)");
-		int count = 0;
-		for (int i = 0; i < y; i++) {
-			// draw the north edge
-			for (int j = 0; j < x; j++) {
-				System.out.print((maze[i][j] & 1) == 0 ? "+---" : "+   ");
-			}
-			System.out.println("+");
-			// draw the west edge
-			for (int j = 0; j < x; j++) {
-				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count]%10 +  " " : "  " + discovered[count]%10 + " " );
-				count++;
-			}
-			System.out.println("|");
-		}
-		// draw the bottom line
-		for (int j = 0; j < x; j++) {
-			System.out.print("+---");
-		}
-		System.out.println("+");
-		
-		printPath(0, V-1, parent);
-		
-    }
-
-
-    public boolean DFSfinished = false;
-    public void visit(int visited[], int parent[], int discovered[], int u){
-    	
-    	visited[u] = 1; // make grey
-    	time += 1;
-    	discovered[u] = time;
-    	
-    	for (Integer i : adj.get(u)) {
-    		if (visited[i] == 0 && !DFSfinished) {
-    			if((u) == adj.size()-1){
-                    DFSfinished = true;
-                }
-    			if (!DFSfinished) {
-    				parent[i] = u;
-    				visit(visited, parent, discovered, i);
-    			}
-    		}
-    	}
-    	visited[u] = 2;	
-    }
     
 	public static void main(String[] args) {
 		
@@ -422,7 +377,7 @@ public class MazeGenerator {
 	    maze55.displayMaze();
 	    maze55.createArray();
 	    maze55.BFS();
-//	    maze55.DFS();
+	    maze55.DFS();
 	    
 	}
 
