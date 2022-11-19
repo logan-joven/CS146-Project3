@@ -234,11 +234,16 @@ public class MazeGenerator {
 		
 		Queue<Integer> q = new LinkedList<>();
 		q.add(0);
+		boolean finished = false; // do not continue BFS if we reach the end
 		int counter = 1; // used for discovery time
-		while (q.size() != 0) {
+		while (q.size() != 0 && !finished) {
 			Integer u = q.remove();
 			for (Integer i : adj.get(u)) {
-				if (visited[i] == 0) { // if undiscovered
+				if((u) == adj.size()-1){ // end of maze is V - 1
+                    finished = true;
+                    q.clear();
+                }
+				if (visited[i] == 0 && !finished) { // if undiscovered
 					visited[i] = 1; // if discovered but not finished
 					distance[i] = distance[u] + 1;
 					parent[i] = u;
@@ -269,6 +274,25 @@ public class MazeGenerator {
 		
 		//print maze with each cell containing the order discovered
 		System.out.println("\nMaze with order of discovery (BFS)");
+		printMaze(discovered);
+		
+		System.out.println("Path: ");
+		printPath(0, V-1, parent);
+	}
+
+	void printPath(int s, int v, int[] parent) {
+		if (v == s) {
+			System.out.print(s + ", ");
+		}
+		else if (parent[v] == -1)
+			System.out.println("no path");
+		else {
+			printPath(s, parent[v], parent);
+			System.out.print(v + ", ");
+		}
+	}
+	
+	void printMaze (int[] discovered) {
 		int count = 0;
 		for (int i = 0; i < y; i++) {
 			// draw the north edge
@@ -278,7 +302,7 @@ public class MazeGenerator {
 			System.out.println("+");
 			// draw the west edge
 			for (int j = 0; j < x; j++) {
-				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count] +  " " : "  " + discovered[count] + " " );
+				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count]%10 +  " " : "  " + discovered[count]%10 + " " );
 				count++;
 			}
 			System.out.println("|");
@@ -289,7 +313,6 @@ public class MazeGenerator {
 		}
 		System.out.println("+");
 	}
-
 	
 	
 	//TODO: modify DFS  to
@@ -306,20 +329,18 @@ public class MazeGenerator {
 		int visited[] = new int[V]; // 0 = not visited, 1 = discovered, 2 = finished
 		int parent[] = new int[V]; // index of parent in adj
 		int discovered[] = new int[V]; // discovery time
-		int finished[] = new int[V]; // finish  time
 		
 		// initialize the graph
 		for (int i = 0; i < V; i++) {
 			visited[i] = 0; // all are not visited at start
 			parent[i] = -1; // index outside of adj
 			discovered[i] = 0; // discovery time
-			finished[i] = 0; // finish time
 		}
 		
 		// call visit on each vertex until end of maze 
         for(int u = 0; u < V; u++){
-            if(visited[u] == 0){
-                visit(visited, parent, finished, discovered, u);
+            if(visited[u] == 0 && !DFSfinished){
+                visit(visited, parent, discovered, u);
                 }
             }
         
@@ -335,10 +356,6 @@ public class MazeGenerator {
 		for (int i = 0; i < V; i++) {
 			System.out.print(discovered[i] + " ");
         }
-		System.out.println("\nFinished: " );
-		for (int i = 0; i < V; i++) {
-			System.out.print(finished[i] + " ");
-        }
 		
 		//print maze with each cell containing the order discovered
 		System.out.println("\nMaze with discovery time (DFS)");
@@ -351,7 +368,7 @@ public class MazeGenerator {
 			System.out.println("+");
 			// draw the west edge
 			for (int j = 0; j < x; j++) {
-				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count] +  " " : "  " + discovered[count] + " " );
+				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count]%10 +  " " : "  " + discovered[count]%10 + " " );
 				count++;
 			}
 			System.out.println("|");
@@ -362,43 +379,49 @@ public class MazeGenerator {
 		}
 		System.out.println("+");
 		
+		printPath(0, V-1, parent);
+		
     }
 
 
-    
-    public void visit(int visited[], int parent[], int finished[], int discovered[], int u){
+    public boolean DFSfinished = false;
+    public void visit(int visited[], int parent[], int discovered[], int u){
     	
     	visited[u] = 1; // make grey
     	time += 1;
     	discovered[u] = time;
     	
     	for (Integer i : adj.get(u)) {
-    		if (visited[i] == 0) {
-    			parent[i] = u;
-    			visit(visited, parent, finished, discovered, i);
+    		if (visited[i] == 0 && !DFSfinished) {
+    			if((u) == adj.size()-1){
+                    DFSfinished = true;
+                }
+    			if (!DFSfinished) {
+    				parent[i] = u;
+    				visit(visited, parent, discovered, i);
+    			}
     		}
     	}
-    	visited[u] = 2;
-    	time += 1;
-    	finished[u] = time; 	
+    	visited[u] = 2;	
     }
     
 	public static void main(String[] args) {
 		
-		MazeGenerator maze33 = new MazeGenerator(3, 3);
-		
-		maze33.displayCells();
-	    maze33.displayMaze();
-	    maze33.createArray();
-	    maze33.BFS();
-	    maze33.DFS();
-	    
-	    
-//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+//		MazeGenerator maze33 = new MazeGenerator(3, 3);
 //		
-//		maze55.displayCells();
-//	    maze55.displayMaze();
-//	    maze55.createArray();
+//		maze33.displayCells();
+//	    maze33.displayMaze();
+//	    maze33.createArray();
+//	    maze33.BFS();
+//	    maze33.DFS();
+	    
+	    
+	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+		
+		maze55.displayCells();
+	    maze55.displayMaze();
+	    maze55.createArray();
+	    maze55.BFS();
 //	    maze55.DFS();
 	    
 	}
