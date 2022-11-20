@@ -3,6 +3,7 @@ package cs146F22.project3;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -37,6 +38,16 @@ public class MazeGenerator {
 		this.y = y;
 		maze = new int[this.x][this.y];
 		generateMaze(0, 0);
+	}
+	
+	//TODO: create a new constructor that reads a file to create the maze instead of generating a random one
+	public MazeGenerator(File file) throws FileNotFoundException {
+		try (Scanner s = new Scanner(file)) { // first line contains the dimensions of maze
+			this.x = s.nextInt();
+			this.y = s.nextInt();
+		}
+		maze = new int[this.x][this.y]; // create the maze
+		//TODO: read the maze in ascii, and turn it into 
 		
 	}
 	
@@ -216,7 +227,7 @@ public class MazeGenerator {
 //        }
 	}
 
-	//TODO: comment what BFS does
+	// perform BFS, then print output to file
 	public void BFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
@@ -260,10 +271,11 @@ public class MazeGenerator {
 		}
 		
 		
-		File file = new File("output.txt"); // write to file
+		File file = new File("BFSoutput.txt"); // write to file
+		PrintStream stdout = System.out; // save previous output object
 		try {
 			PrintStream stream = new PrintStream(file);
-			System.setOut(stream);
+			System.setOut(stream); // change output to file instead of console
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -278,9 +290,11 @@ public class MazeGenerator {
 		System.out.println("Path: ");
 		System.out.println(path.toString()); // print path as an array
 		System.out.println("Total number of cells visited: " + path.size()); // print size of path
+		
+		System.setOut(stdout); // set path back to console
 	}
     
-	// TODO: comment what DFS does
+	// perform DFS, then print results to file
     public void DFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
@@ -302,6 +316,15 @@ public class MazeGenerator {
                 }
             }
         
+		File file = new File("DFSoutput.txt"); // write to file
+		PrintStream stdout = System.out; // save previous output object
+		try {
+			PrintStream stream = new PrintStream(file);
+			System.setOut(stream); // change output to file instead of console
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	      
 		System.out.println("\nDFS:");
 		
 		path = new ArrayList<Integer> ();
@@ -312,6 +335,8 @@ public class MazeGenerator {
 		System.out.println("Path: ");
 		System.out.println(path.toString()); // print path as an array
 		System.out.println("Total number of cells visited: " + path.size()); // print size of path
+		
+		System.setOut(stdout); // set path back to console
     }
 
     // recursive call in DFS
@@ -405,23 +430,33 @@ public class MazeGenerator {
     
 	public static void main(String[] args) {
 		
-//		MazeGenerator maze33 = new MazeGenerator(3, 3);
-//		
-//		maze33.displayCells();
-//	    maze33.displayMaze();
-//	    maze33.createArray();
-//	    maze33.BFS();
-//	    maze33.DFS();
-	    
-	    
-	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+		MazeGenerator maze33 = new MazeGenerator(3, 3);
 		
-		maze55.displayCells();
-	    maze55.displayMaze();
-	    maze55.createArray();
-	    maze55.BFS();
-	    maze55.DFS();
+		maze33.displayCells();
+	    maze33.displayMaze();
+	    maze33.createArray();
+	    maze33.BFS();
+	    maze33.DFS();
 	    
+	    
+//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
+//		
+//		maze55.displayCells();
+//	    maze55.displayMaze();
+//	    maze55.createArray();
+//	    maze55.BFS();
+//	    maze55.DFS();
+		
+		
+//		File file = new File("maze4.txt");
+//		try {
+//			MazeGenerator test = new MazeGenerator(file);
+//			test.displayCells();
+//			test.displayMaze();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 }
