@@ -3,6 +3,9 @@ package cs146F22.project3;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,15 +21,15 @@ public class MazeGenerator {
 	// stores the cells
 	private final int[][] maze;
 	
-	// stores the adjacency list
+	// stores the adjacency lists
 	ArrayList<ArrayList<Integer> > adj;
 	
 	// stores the time and finished flag for DFS
     public int time = 0;
     public boolean DFSfinished = false;
-
-    // stores the number of tiles/cells visited
-	public int tiles = 1;
+    
+    //stores the shortest path
+    ArrayList<Integer> path;
     
 	// Constructor
 	public MazeGenerator(int x, int y) {
@@ -213,7 +216,7 @@ public class MazeGenerator {
 //        }
 	}
 
-	//TODO: modify BFS to write into file instead of print into console, check with JUnit tests, also write what BFS does
+	//TODO: comment what BFS does
 	public void BFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
@@ -256,30 +259,28 @@ public class MazeGenerator {
 			visited[u] = 2; // finished
 		}
 		
-		//print maze with each cell containing the order discovered
-		System.out.println("\nMaze with order of discovery (BFS)");
-		printMaze(discovered);
 		
-		tiles = 1;
+		File file = new File("output.txt"); // write to file
+		try {
+			PrintStream stream = new PrintStream(file);
+			System.setOut(stream);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	      
+		System.out.println("\nBFS:");
+		
+		path = new ArrayList<Integer> ();
+		shortestPath(0, V - 1, parent); // calculate shortest path
+		printMaze(discovered, visited); // print maze with cells containing order discovered
+		printMazeShortestPath(visited); // print maze with shortest path as #'s
+		
 		System.out.println("Path: ");
-		printPath(0, V-1, parent);
-		System.out.println("\nTotal number of tiles visited: " + tiles);
+		System.out.println(path.toString()); // print path as an array
+		System.out.println("Total number of cells visited: " + path.size()); // print size of path
 	}
-
-    void printPath(int s, int v, int[] parent) {
-        if (v == s) {
-            System.out.print(s + ", ");
-        }
-        else if (parent[v] == -1)
-            System.out.println("no path");
-        else {
-            printPath(s, parent[v], parent);
-            System.out.print(v + ", ");
-            tiles++;
-        }
-    }
     
-	// TODO: modify DFS to write into file instead of print into console, check with JUnit tests, also write what DFS does
+	// TODO: comment what DFS does
     public void DFS() {
 		// initialize
 		int V = x * y; // V vertices, equal to rows * columns
@@ -301,15 +302,16 @@ public class MazeGenerator {
                 }
             }
         
-		//print maze with each cell containing the order discovered
-		System.out.println("\nMaze with order of discovery (DFS)");
-		printMaze(discovered);
+		System.out.println("\nDFS:");
 		
-		tiles = 1;
+		path = new ArrayList<Integer> ();
+		shortestPath(0, V - 1, parent); // calculate shortest path
+		printMaze(discovered, visited); // print maze with cells containing order discovered
+		printMazeShortestPath(visited); // print maze with shortest path as #'s
+		
 		System.out.println("Path: ");
-		printPath(0, V-1, parent);
-		System.out.println("\nTotal number of tiles visited: " + tiles);
-		
+		System.out.println(path.toString()); // print path as an array
+		System.out.println("Total number of cells visited: " + path.size()); // print size of path
     }
 
     // recursive call in DFS
@@ -333,9 +335,8 @@ public class MazeGenerator {
     	visited[u] = 2;	
     }
 	
-    // currently prints the maze with discovered cells in order (1s place only), undiscovered as 0
-    // TODO: write to file instead of printing in console
-	void printMaze (int[] discovered) {
+    //  prints the maze with discovered cells in order (1s place only), undiscovered as 0
+	void printMaze (int[] discovered, int[] visited) {
 		int count = 0;
 		for (int i = 0; i < y; i++) {
 			// draw the north edge
@@ -345,7 +346,10 @@ public class MazeGenerator {
 			System.out.println("+");
 			// draw the west edge
 			for (int j = 0; j < x; j++) {
-				System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count]%10 +  " " : "  " + discovered[count]%10 + " " );
+				if (visited[count] == 0)
+					System.out.print((maze[i][j] & 8) == 0 ? "|   " : "    ");
+				else
+					System.out.print((maze[i][j] & 8) == 0 ? "| " + discovered[count]%10 +  " " : "  " + discovered[count]%10 + " " );
 				count++;
 			}
 			System.out.println("|");
@@ -357,7 +361,46 @@ public class MazeGenerator {
 		System.out.println("+");
 	}
 	
-	// TODO: method for printing the maze with shortest path as #'s
+	// prints maze with shortest path as #'s
+    void printMazeShortestPath (int[] visited) {
+        int count = 0;
+        for (int i = 0; i < y; i++) {
+            // draw the north edge
+            for (int j = 0; j < x; j++) {
+                System.out.print((maze[i][j] & 1) == 0 ? "+---" : "+   ");
+            }
+            System.out.println("+");
+            // draw the west edge
+            for (int j = 0; j < x; j++) {
+                if(path.contains(count)) { // if the vertex is in path
+                    System.out.print((maze[i][j] & 8) == 0 ? "| " + "#" + " " : "  " + "#"  + " ");
+                }
+                else {
+                    System.out.print((maze[i][j] & 8) == 0 ? "| " + " " + " " : "  " + " "  + " ");
+                }
+                count++;
+            }
+            System.out.println("|");
+        }
+        // draw the bottom line
+        for (int j = 0; j < x; j++) {
+            System.out.print("+---");
+        }
+        System.out.println("+");
+    }
+    
+    // finds the shortest path from s to v, based on parents
+    void shortestPath(int s, int v, int[] parent) {
+        if (v == s) {
+            path.add(s);
+        }
+        else if (parent[v] == -1)
+            System.out.println("no path");
+        else {
+            shortestPath(s, parent[v], parent);
+            path.add(v);
+        }
+    }
 	
     
 	public static void main(String[] args) {
