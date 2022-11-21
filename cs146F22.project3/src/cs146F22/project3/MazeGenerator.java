@@ -40,15 +40,21 @@ public class MazeGenerator {
 		generateMaze(0, 0);
 	}
 	
-	//TODO: create a new constructor that reads a file to create the maze instead of generating a random one
+	// constructor that reads a file to create the maze instead of generating a random one
+	// 1st line is the dimensions
+	// 2nd line contains the directions of cells
 	public MazeGenerator(File file) throws FileNotFoundException {
-		try (Scanner s = new Scanner(file)) { // first line contains the dimensions of maze
+		try (Scanner s = new Scanner(file)) { // read dimensions
 			this.x = s.nextInt();
 			this.y = s.nextInt();
+			
+			maze = new int[this.x][this.y]; // create the maze
+			for (int i = 0; i < y; i++) { // read the maze, and turn it into 2D array of directions
+				for (int j = 0; j < x ;j++) {
+					maze[i][j] = s.nextInt();
+				}
+			}
 		}
-		maze = new int[this.x][this.y]; // create the maze
-		//TODO: read the maze in ascii, and turn it into 
-		
 	}
 	
 	// prints the maze with the cells and walls removed 
@@ -156,7 +162,6 @@ public class MazeGenerator {
 	    // add edges 
 		for (int i = 0; i < x; i++) { // row x
 			for (int j = 0; j < y; j++) { // column y
-				// TODO: come up with something better?
 				if (maze[i][j] == 1) // neighbor north
 					addEdge(adj, vertex, vertex - y);
 				else if (maze[i][j] == 2) // neighbor south
@@ -211,7 +216,6 @@ public class MazeGenerator {
 				}
 			// impossible combinations of bits are 0, 15
 				vertex++;
-				//System.out.println(vertex);
 			}
 		}
 		// print adjacency lists
@@ -289,7 +293,14 @@ public class MazeGenerator {
 		
 		System.out.println("Path: ");
 		System.out.println(path.toString()); // print path as an array
-		System.out.println("Total number of cells visited: " + path.size()); // print size of path
+		System.out.println("Length of path: " + path.size()); // print size of path
+		
+		int visitedCounter = 0;
+		for (int i = 0; i < visited.length; i++) {
+			if (visited[i] != 0)
+				visitedCounter++;
+		}		
+		System.out.println("Visited cells: " + visitedCounter); // print # of visited cells
 		
 		System.setOut(stdout); // set path back to console
 	}
@@ -334,7 +345,14 @@ public class MazeGenerator {
 		
 		System.out.println("Path: ");
 		System.out.println(path.toString()); // print path as an array
-		System.out.println("Total number of cells visited: " + path.size()); // print size of path
+		System.out.println("Length of path: " + path.size()); // print size of path
+		
+		int visitedCounter = 0;
+		for (int i = 0; i < visited.length; i++) {
+			if (visited[i] != 0)
+				visitedCounter++;
+		}		
+		System.out.println("Visited cells: " + visitedCounter); // print # of visited cells
 		
 		System.setOut(stdout); // set path back to console
     }
@@ -360,7 +378,7 @@ public class MazeGenerator {
     	visited[u] = 2;	
     }
 	
-    //  prints the maze with discovered cells in order (1s place only), undiscovered as 0
+    //  prints the maze with discovered cells in order (1s place only)
 	void printMaze (int[] discovered, int[] visited) {
 		int count = 0;
 		for (int i = 0; i < y; i++) {
@@ -426,37 +444,5 @@ public class MazeGenerator {
             path.add(v);
         }
     }
-	
-    
-	public static void main(String[] args) {
-		
-		MazeGenerator maze33 = new MazeGenerator(3, 3);
-		
-		maze33.displayCells();
-	    maze33.displayMaze();
-	    maze33.createArray();
-	    maze33.BFS();
-	    maze33.DFS();
-	    
-	    
-//	    MazeGenerator maze55 = new MazeGenerator(5, 5);
-//		
-//		maze55.displayCells();
-//	    maze55.displayMaze();
-//	    maze55.createArray();
-//	    maze55.BFS();
-//	    maze55.DFS();
-		
-		
-//		File file = new File("maze4.txt");
-//		try {
-//			MazeGenerator test = new MazeGenerator(file);
-//			test.displayCells();
-//			test.displayMaze();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
 
 }
