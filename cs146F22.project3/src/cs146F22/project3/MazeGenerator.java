@@ -1,3 +1,9 @@
+/*	Project 3
+ * 	Jeffrey Van and Logan Joven
+ * 	Objective: The goal of this project is to write a program that will automatically generate and solve mazes. 
+ * 	The maze can be generated randomly, or an input using directions can be used.
+ * 	Uses depth-first search (DFS) and breadth-first search (BFS).
+ */
 package cs146F22.project3;
 
 import java.util.Collections;
@@ -42,7 +48,7 @@ public class MazeGenerator {
 	
 	// constructor that reads a file to create the maze instead of generating a random one
 	// 1st line is the dimensions
-	// 2nd line contains the directions of cells
+	// rest of file contains the directions of cells
 	public MazeGenerator(File file) throws FileNotFoundException {
 		try (Scanner s = new Scanner(file)) { // read dimensions
 			this.x = s.nextInt();
